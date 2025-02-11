@@ -1,12 +1,12 @@
-import os, asyncio
+import os, asyncio, csv
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask.views import MethodView
 from app.models.BlueSkyUrlBuilder import get_bluesky_uri
 from app.models.BlueSkyTextBuilder import extract_replies_from_thread
 from app.models.BlueSkyLoginLogic import bluesky_login, UnauthorizedError
 from app.models.SentimentLLM import send_prompt_with_texts
-from app.models.sentimentVADER  import get_average_sentiment_score
-from app.models.DataSaver import save_to_csv
+from app.models.sentimentVADER import get_average_sentiment_score
+from app.models.RecordHandler import save_to_csv, get_user_records
  
 
 class BlueSkyController(MethodView):
@@ -39,37 +39,46 @@ class ShowResults(MethodView):
     def get(self):
         username = request.args.get("username")
         password = request.args.get("password")
-        return render_template("results.html", username=username, password=password)
+        records = self.get_user_records(username)
+        return render_template("results.html", username=username, password=password, records=records)
 
     async def post(self):
         username = request.form["username"]
         password = request.form["password"]
-        url = request.form["url"]
-        uri = get_bluesky_uri(url)
-        if not username or not password:
-            flash("You must be logged in to view results.", "danger")
-            print("error1")
-            return redirect(url_for("main.login"))
-        try:
-            self.client = bluesky_login(username, password) 
-            res = self.client.get_post_thread(uri)
-            thread = res.thread
-            initial_text, texts = extract_replies_from_thread(thread)
-            vader_sentiment_score = get_average_sentiment_score(texts)
-            sentiment_text  = await  send_prompt_with_texts(initial_text, texts)
-
+        if 'url' in request.form:
+            url = request.form["url"]
+            uri = get_bluesky_uri(url)
+            if not username or not password:
+                flash("You must be logged in to view results.", "danger")
+                print("error1")
+                return redirect(url_for("main.login"))
             try:
-                print("Calling save_to_csv")
-                save_to_csv(username, url, initial_text, vader_sentiment_score, sentiment_text)
-                print("save_to_csv called successfully")
-            except Exception as e:
-                print(f"Error in save_to_csv: {e}")
+                self.client = bluesky_login(username, password) 
+                res = self.client.get_post_thread(uri)
+                thread = res.thread
+                initial_text, texts = extract_replies_from_thread(thread)
+                vader_sentiment_score = get_average_sentiment_score(texts)
+                sentiment_text  = await  send_prompt_with_texts(initial_text, texts)
 
-            print("Sentiment Text:", sentiment_text)
-            return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score = vader_sentiment_score, username=username, password=password)
-        except Exception as e:
-            flash(str(e), "danger")
-        return render_template("results.html", username=username, password=password)
+                try:
+                    print("Calling save_to_csv")
+                    save_to_csv(username, url, initial_text, vader_sentiment_score, sentiment_text)
+                    print("save_to_csv called successfully")
+                except Exception as e:
+                    print(f"Error in save_to_csv: {e}")
+
+                print("Sentiment Text:", sentiment_text)
+                records = get_user_records(self,username)
+                return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score=vader_sentiment_score, username=username, password=password, records=records)
+            except Exception as e:
+                flash(str(e), "danger")
+            return render_template("results.html", username=username, password=password)
+        else:
+            initial_text = request.form["initial_text"]
+            vader_sentiment_score = request.form["vader_sentiment_score"]
+            sentiment_text = request.form["sentiment_text"]
+            records = get_user_records(self,username)
+            return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score=vader_sentiment_score, username=username, password=password, records=records)
 
 main = Blueprint("main", __name__)
 main.add_url_rule('/login', view_func=BlueSkyController.as_view('login'))

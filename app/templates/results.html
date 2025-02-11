@@ -49,12 +49,41 @@
             margin: 0;
             padding-left: 20px;
         }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: -2px 0 5px black;
+            overflow-y: auto;
+        }
+        .record-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
+            border: 1px solid lightgrey;
+            border-radius: 5px;
+            text-decoration: none;
+            color: black;
+        }
+        .record-item strong {
+            display: block;
+        }
+        .record-item:hover {
+            background-color: white;
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">BlueSky</a>
+        <a class="navbar-brand" href="{{ url_for('main.logout') }}">BlueSky Sentiment Analysis System ( and the logout button 😉 )</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -80,21 +109,42 @@
     <div class="container mt-4">
         <div class="result-container">
             <h2 class="my-4">Initial Text:</h2>
-            <p>{{ initial_text }}</p>
+            <p id="initial_text">{{ initial_text | default('') }}</p>
         </div>
     </div>
     
     <div class="container mt-4">
         <div class="result-container">
             <h2 class="my-4">VADER Sentiment Score:</h2>
-            <pre>{{ vader_sentiment_score }}</pre>
+            <p>The compound score is the most important and is computed as a normalized value</p>
+            <pre id="vader_sentiment_score">{{ vader_sentiment_score | default('') }}</pre>
         </div>
     </div>
     
     <div class="container mt-4">
         <div class="result-container">
             <h2 class="my-4">Sentiment:</h2>        
-            <p>{{ sentiment_text }}</p>
+            <p id="sentiment_text">{{ sentiment_text | default('') }}</p>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h2>Previous Records</h2>
+        <div id="record_list">
+            {% for record in records %}
+            <form method="post" action="{{ url_for('main.show_results') }}">
+                <input type="hidden" name="username" value="{{ username }}">
+                <input type="hidden" name="password" value="{{ password }}">
+                <input type="hidden" name="date" value="{{ record.date }}">
+                <input type="hidden" name="initial_text" value="{{ record.initial_text }}">
+                <input type="hidden" name="vader_sentiment_score" value="{{ record.vader_sentiment_score }}">
+                <input type="hidden" name="sentiment_text" value="{{ record.sentiment_text }}">
+                <button type="submit" class="record-item">
+                    <strong>{{ record.date }}</strong><br>
+                    {{ record.initial_text }}
+                </button>
+            </form>
+            {% endfor %}
         </div>
     </div>
 
