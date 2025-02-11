@@ -60,7 +60,7 @@ class ShowResults(MethodView):
 
             try:
                 print("Calling save_to_csv")
-                save_to_csv(url, initial_text, vader_sentiment_score, sentiment_text)
+                save_to_csv(username, url, initial_text, vader_sentiment_score, sentiment_text)
                 print("save_to_csv called successfully")
             except Exception as e:
                 print(f"Error in save_to_csv: {e}")
