@@ -6,7 +6,7 @@ from app.models.BlueSkyTextBuilder import extract_replies_from_thread
 from app.models.BlueSkyLoginLogic import bluesky_login, UnauthorizedError
 from app.models.SentimentLLM import send_prompt_with_texts
 from app.models.sentimentVADER import get_average_sentiment_score
-from app.models.RecordHandler import save_to_csv, get_user_records
+from app.models.RecordHandler import save_to_csv, get_user_records, delete_record
  
 
 class BlueSkyController(MethodView):
@@ -39,7 +39,7 @@ class ShowResults(MethodView):
     def get(self):
         username = request.args.get("username")
         password = request.args.get("password")
-        records = self.get_user_records(username)
+        records = get_user_records(username)
         return render_template("results.html", username=username, password=password, records=records)
 
     async def post(self):
@@ -68,21 +68,30 @@ class ShowResults(MethodView):
                     print(f"Error in save_to_csv: {e}")
 
                 print("Sentiment Text:", sentiment_text)
-                records = get_user_records(self,username)
+                records = get_user_records(username)
                 return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score=vader_sentiment_score, username=username, password=password, records=records)
             except Exception as e:
                 flash(str(e), "danger")
             return render_template("results.html", username=username, password=password)
+        
+        elif 'delete' in request.form:
+            record_date = request.form["date"]
+            delete_record(username, record_date)
+            flash("Record deleted successfully.", "success")
+            records = get_user_records(username)
+            return render_template("results.html", username=username, password=password, records=records)
+        
         else:
             initial_text = request.form["initial_text"]
             vader_sentiment_score = request.form["vader_sentiment_score"]
             sentiment_text = request.form["sentiment_text"]
-            records = get_user_records(self,username)
+            records = get_user_records(username)
             return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score=vader_sentiment_score, username=username, password=password, records=records)
 
 main = Blueprint("main", __name__)
 main.add_url_rule('/login', view_func=BlueSkyController.as_view('login'))
 main.add_url_rule('/results', view_func=ShowResults.as_view('show_results'))
+main.add_url_rule('/delete_record', view_func=ShowResults.as_view('delete_record'))
 
 @main.route("/logout")
 def logout():

@@ -53,7 +53,7 @@
             position: fixed;
             top: 0;
             right: 0;
-            width: 250px;
+            width: 400px;
             height: 100%;
             background-color: white;
             padding: 20px;
@@ -132,21 +132,27 @@
         <h2>Previous Records</h2>
         <div id="record_list">
             {% for record in records %}
-            <form method="post" action="{{ url_for('main.show_results') }}">
+            <form method="post" action="{{ url_for('main.delete_record') }}">
                 <input type="hidden" name="username" value="{{ username }}">
                 <input type="hidden" name="password" value="{{ password }}">
                 <input type="hidden" name="date" value="{{ record.date }}">
                 <input type="hidden" name="initial_text" value="{{ record.initial_text }}">
                 <input type="hidden" name="vader_sentiment_score" value="{{ record.vader_sentiment_score }}">
                 <input type="hidden" name="sentiment_text" value="{{ record.sentiment_text }}">
-                <button type="submit" class="record-item">
-                    <strong>{{ record.date }}</strong><br>
-                    {{ record.initial_text }}
-                </button>
+                <div class="record-item" style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
+                    <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
+                        <button type="submit" class="btn btn-link" name="view" value="view" style="text-decoration: none; color: inherit; width: 100%; text-align: left;">
+                            <strong>{{ record.date }}</strong><br>
+                            {{ record.initial_text }}
+                        </button>
+                    </div>
+                    <button type="submit" class="btn btn-danger" name="delete" value="delete" style="width: 100%;">Delete</button>
+                </div>
             </form>
             {% endfor %}
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
