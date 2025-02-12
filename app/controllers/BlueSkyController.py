@@ -1,11 +1,10 @@
-import os, asyncio, csv
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask.views import MethodView
 from app.models.BlueSkyUrlBuilder import get_bluesky_uri
 from app.models.BlueSkyTextBuilder import extract_replies_from_thread
 from app.models.BlueSkyLoginLogic import bluesky_login, UnauthorizedError
 from app.models.SentimentLLM import send_prompt_with_texts
-from app.models.sentimentVADER import get_average_sentiment_score
+from app.models.SentimentVADER import get_average_sentiment_score
 from app.models.RecordHandler import save_to_csv, get_user_records, delete_record
  
 

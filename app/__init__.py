@@ -5,8 +5,8 @@ def create_app():
     app.config.from_object("config")
     app.config["SESSION_TYPE"] = "filesystem"
 
-    from app.controllers.BlueSkyController import main  # Import the main blueprint
+    from app.controllers.BlueSkyController import main
 
-    app.register_blueprint(main)  # Register the main blueprint
+    app.register_blueprint(main)
 
     return app
