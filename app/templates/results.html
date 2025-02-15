@@ -13,6 +13,7 @@
             color: black;
             margin: 0;
             padding: 0;
+            font-size: 120%;
         }
         h1, h2 {
             color: orange;
@@ -71,12 +72,38 @@
             border-radius: 5px;
             text-decoration: none;
             color: black;
+            font-size: 120%;
         }
         .record-item strong {
             display: block;
         }
         .record-item:hover {
             background-color: white;
+        }
+        .info-icon {
+            display: inline-block;
+            margin-left: 10px;
+            color: blue;
+            cursor: pointer;
+            position: relative;
+        }
+        .info-icon:hover .tooltip-text {
+            display: block;
+        }
+        .tooltip-text {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 0;
+            background-color: white;
+            color: black;
+            border: 1px solid lightgrey;
+            border-radius: 5px;
+            padding: 10px;
+            width: 400px;
+            box-shadow: 0 2px 4px black;
+            z-index: 1;
+            font-size: 20px; 
         }
     </style>
 </head>
@@ -115,7 +142,11 @@
     
     <div class="container mt-4">
         <div class="result-container">
-            <h2 class="my-4">VADER Sentiment Score:</h2>
+            <h2 class="my-4">VADER Sentiment Score:<span class="info-icon">ℹ
+                <span class="tooltip-text">
+                    The compound score is the most important and is computed as a normalized value between -1 (most negative) and +1 (most positive). It summarizes the sentiment of the text: Compound score > 0.05: Positive sentiment Compound score < -0.05: Negative sentiment Compound score between -0.05 and 0.05: Neutral sentiment
+                </span>
+            </span></h2>
             <p>The compound score is the most important and is computed as a normalized value:</p>
             <pre id="vader_sentiment_score">{{ vader_sentiment_score | default('') }}</pre>
         </div>

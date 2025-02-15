@@ -12,6 +12,7 @@ def get_average_sentiment_score(comments):
     num_comments = len(comments)
     total_scores = reduce(merge_scores, map(get_sentiment_score, comments))
     average_scores = {key: total / num_comments for key, total in total_scores.items()}
+    average_scores = format_scores_to_two_decimals(average_scores)
     return format_sentiment_scores(average_scores)
 
 def format_sentiment_scores(scores):
@@ -30,9 +31,12 @@ def format_sentiment_score(score):
         return "Negative"
     else:
         return "Neutral"
+
+def format_scores_to_two_decimals(scores):
+    return {key: round(score, 2) for key, score in scores.items()}
     
 
-    
+
 # The compound score is the most important and is computed as a normalized value between -1 (most negative) and +1 (most positive). It summarizes the sentiment of the text:
 # Compound score > 0.05: Positive sentiment
 # Compound score < -0.05: Negative sentiment

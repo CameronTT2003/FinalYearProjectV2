@@ -15,7 +15,8 @@ def save_to_csv(username, url, initial_text, vader_sentiment_score, sentiment_te
             writer.writerow(header)
 
         writer.writerow([username, current_date, url, initial_text, vader_sentiment_score, sentiment_text])
-
+        
+# this function is used to delete a record from the csv file
 def delete_record(username, record_date):
     filename = "results.csv"
     records = []
