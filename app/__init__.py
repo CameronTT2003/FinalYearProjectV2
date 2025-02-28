@@ -6,6 +6,7 @@ def create_app():
     app.config["SESSION_TYPE"] = "filesystem"
 
     from app.controllers.BlueSkyController import main
+    
 
     app.register_blueprint(main)
 

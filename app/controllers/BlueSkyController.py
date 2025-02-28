@@ -56,9 +56,9 @@ class ShowResults(MethodView):
                 res = self.client.get_post_thread(uri)
                 thread = res.thread
                 initial_text, texts = extract_replies_from_thread(thread)
-                vader_sentiment_score = get_average_sentiment_score(texts)
                 sentiment_text  = await  send_prompt_with_texts(initial_text, texts)
-
+                vader_sentiment_score = get_average_sentiment_score(texts)
+                
                 try:
                     print("Calling save_to_csv")
                     save_to_csv(username, url, initial_text, vader_sentiment_score, sentiment_text)
