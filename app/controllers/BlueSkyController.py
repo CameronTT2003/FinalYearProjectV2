@@ -72,6 +72,7 @@ class ShowResults(MethodView):
 
                 print("Sentiment Text:", sentiment_text)
                 records = get_user_records(username)
+
                 return render_template("results.html", initial_text=initial_text, sentiment_text=sentiment_text, vader_sentiment_score=vader_sentiment_score, username=username, password=password, records=records)
             except Exception as e:
                 flash(str(e), "danger")

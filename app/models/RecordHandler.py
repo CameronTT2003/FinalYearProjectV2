@@ -41,7 +41,8 @@ def get_user_records(username):
                 'date': row['Date'],
                 'initial_text': row['Initial Text'],
                 'vader_sentiment_score': row['Vader Sentiment Score'],
-                'sentiment_text': row['Sentiment Text']
+                'sentiment_text': row['Sentiment Text'],
+                'url': row['URL']
             }
             for row in reader if row['UserId'] == username
         ]
