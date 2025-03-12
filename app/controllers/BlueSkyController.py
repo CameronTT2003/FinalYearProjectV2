@@ -94,7 +94,7 @@ main.add_url_rule('/delete_record', view_func=ShowResults.as_view('delete_record
 
 @main.route("/logout")
 def logout():
-    flash("You have been logged out.", "success")
+    #flash("You have been logged out.", "success")
     return redirect(url_for("main.login"))
 
 @main.route("/", methods=["GET"])

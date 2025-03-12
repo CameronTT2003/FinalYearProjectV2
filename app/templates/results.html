@@ -121,6 +121,18 @@
     </nav>
 
     <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                    {% for category, message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container mt-4">
         <h1 class="my-4">Submit BlueSky URL:</h1>
         <form class="form-container" method="post" action="{{ url_for('main.show_results') }}">
             <input type="hidden" name="username" value="{{ username }}">
@@ -183,7 +195,6 @@
             {% endfor %}
         </div>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
