@@ -7,7 +7,13 @@ pipeline {
                 checkout scm
             }
         }
-      
+        stage('Install Dependencies') {
+            steps {
+                // Upgrade pip and install dependencies from requirements.txt
+                bat 'python -m pip install --upgrade pip'
+                bat 'python -m pip install --upgrade pip'
+            }
+        }
         stage('Run Tests') {
             when {
                 // Only run tests if test files exist
