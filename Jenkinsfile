@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-        // Optional: Add environment variables if needed
-        // e.g., SECRET_KEY = credentials('secret_key')
-    }
     stages {
         stage('Checkout') {
             steps {
