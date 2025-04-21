@@ -56,7 +56,10 @@ class ShowResults(MethodView):
             uri = get_bluesky_uri(url)
             try:
                 self.client = bluesky_login(username, password)
-                res = self.client.get_post_thread(uri)
+                try: res = self.client.get_post_thread(uri)
+                except Exception as e:
+                    flash(f"Error fetching post thread (URL Is Invalid)", "danger")
+                    return render_template("results.html", username=username, password=password)
                 thread = res.thread
                 initial_text, texts = extract_replies_from_thread(thread)
                 sentiment_text = await send_prompt_with_texts(initial_text, texts)

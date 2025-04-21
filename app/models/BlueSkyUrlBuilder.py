@@ -4,6 +4,7 @@ def extract_profile_and_post(url):
         post_part = url.split('post/')[1]
         return [profile_part, post_part]
     except IndexError:
+        print("Error: Unable to extract profile and post from URL.")
         return ["", ""]
     
 def create_uri(profile_and_post):
