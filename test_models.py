@@ -21,6 +21,7 @@ def test_get_sentiment_score():
     comment = "I love this product!"
     scores = get_sentiment_score(comment)
     for key in ['neg', 'neu', 'pos', 'compound']:
+        print(f"Key: {key}, Value: {scores[key]}")
         assert key in scores
         assert isinstance(scores[key], float)
 
@@ -29,7 +30,6 @@ def test_merge_scores():
     s2 = {'neg': 0.2, 'neu': 0.3, 'pos': 0.3, 'compound': 0.1}
     merged = merge_scores(s1, s2)
     formatted = format_scores_to_two_decimals(merged)
-    #print(formatted)
     expected = {'neg': 0.3, 'neu': 0.9, 'pos': 0.4, 'compound': 0.3}
     assert formatted == expected
 
@@ -55,11 +55,9 @@ def test_save_and_get_records():
     url = "http://example.com"
     initial_text = "Hello world"
     vader_score = "{'neg': 0.1, 'neu': 0.6, 'pos': 0.1, 'compound': 'Neutral'}"
-    sentiment_text = "Test sentiment summary"
-    
-    # Save record
-    RecordHandler.save_to_csv(username, url, initial_text, vader_score, sentiment_text)
-    
+    sentiment_text = "Test sentiment summary"   
+    # Save the record
+    RecordHandler.save_to_csv(username, url, initial_text, vader_score, sentiment_text) 
     # Get records for that user
     records = RecordHandler.get_user_records(username)
     assert len(records) == 1
@@ -133,7 +131,7 @@ def test_extract_replies_from_thread():
 from app.models.BlueSkyLoginLogic import bluesky_login, BlueSkyClient
 from atproto_client.exceptions import UnauthorizedError
 
-# For testing login function we can monkeypatch Client.login
+# For testing login function we use monkeypatch Client.login
 class DummyClient:
     def __init__(self):
         self.logged_in = False
@@ -148,7 +146,7 @@ def dummy_client_factory():
     return DummyClient()
 
 def test_bluesky_login_success(monkeypatch):
-    # Monkey-patch the Client in BlueSkyLoginLogic to use DummyClient.
+    # Monkey patch the Client in BlueSkyLoginLogic to use DummyClient.
     from atproto import Client as RealClient
     monkeypatch.setattr("app.models.BlueSkyLoginLogic.Client", lambda: dummy_client_factory())
     
