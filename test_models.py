@@ -7,7 +7,7 @@ import datetime
 import pytest
 from functools import reduce
 
-# ---- SentimentVADER Tests ----
+#SentimentVADER Tests
 from app.models.SentimentVADER import (
     get_sentiment_score,
     merge_scores,
@@ -39,12 +39,12 @@ def test_format_sentiment_score():
     assert format_sentiment_score(0) == "Neutral"
 
 
-# ---- RecordHandler Tests ----
+#RecordHandler Tests
 import app.models.RecordHandler as RecordHandler
 
 @pytest.fixture(autouse=True)
 def isolated_csv(tmp_path, monkeypatch):
-    # Change CWD so RecordHandler functions use a temp "results.csv"
+    # Change CWD so RecordHandler functions use a temp results.csv
     monkeypatch.chdir(tmp_path)
     # Ensure a clean slate
     open("results.csv", mode="w").close()
@@ -90,7 +90,7 @@ def test_delete_record():
     assert len(records) == 1
     assert records[0]['date'] != fake_date
 
-# ---- BlueSkyTextBuilder Tests ----
+#BlueSkyTextBuilder Tests
 from app.models.BlueSkyTextBuilder import extract_text_from_thread, extract_replies_from_thread
 
 # Define dummy thread objects to simulate nested replies structure
@@ -102,7 +102,7 @@ class DummyThread:
     def __init__(self, text=None, replies=None):
         self.record = DummyRecord(text) if text is not None else None
         self.replies = replies or []
-        # Some threads may have a "post" attribute for replies extraction
+        # Some threads may have a post attribute for replies extraction
         self.post = self
 
 def create_dummy_thread():
@@ -127,7 +127,7 @@ def test_extract_replies_from_thread():
     assert initial_text == "Initial text"
     assert "Reply 1" in texts and "Reply 2" in texts
 
-# ---- BlueSkyLoginLogic Tests ----
+#BlueSkyLoginLogic Tests
 from app.models.BlueSkyLoginLogic import bluesky_login, BlueSkyClient
 from atproto_client.exceptions import UnauthorizedError
 
